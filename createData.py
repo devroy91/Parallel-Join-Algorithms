@@ -34,7 +34,7 @@ mgrTable = pd.DataFrame(mgrFile, columns = ["managerID", "Name"])
 
 ##writing to csv
 path = os.path.join(folder, "Trainees.csv" )
-empTable.to_csv(path)
+empTable.to_csv(path, index = False)
 
 path = os.path.join(folder, "Manager.csv" )
-mgrTable.to_csv(path)
+mgrTable.to_csv(path, index = False)
