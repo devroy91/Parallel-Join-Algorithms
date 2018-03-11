@@ -16,7 +16,9 @@ emp = 20000
 mgr = 500
 
 ##mapping managers to trainees
-idEmp = np.random.randint(low = 1, high = 501, size = 20000)
+idEmp = np.random.randint(low = 1, high = 10000000, size = 20000)
+idEmp = idEmp % 500
+idEmp += 1
 
 ##creating trainee table
 empFile = []
