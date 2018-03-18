@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
-import pandas as pd
-import numpy as np
 from itertools import accumulate
-import csv
+import csvUtil as csv
 ##count the no of matches between tables 
-def countMatches(table1, table2, idx):
+def countMatches(table1, table2, idx1, idx2):
+    
     count = 0
-    for value1 in table1[idx]:
-        for value2 in table2[idx]:
-            if value1 == value2:
+    for row1 in table1:
+        for row2 in table2:
+            if row1[idx1] == row2[idx2]:
                 count += 1
     return count
 
@@ -20,22 +19,19 @@ def prefixSum(array):
     return res
 
 ##join
-def join(table1, table2, output, pos, idx):
+def join(table1, table2, output, pos, idx1, idx2):
     i = 0
-    id1 = 0
     
-    for value1 in table1[idx]:
-        id2 = 0
-        for value2 in table2[idx]:
-            if value1 == value2:
-                op1 = list(table1.iloc[id1])
-                op2 = list(table2.iloc[id2])
+    for row1 in table1:
+        
+        for row2 in table2:
+            if row1[idx1] == row2[idx2]:
+                
                 #print(op1, op2, "index = ",pos + i)
-                output[pos + i] = op1 + op2
+                output[pos + i] = row1 + row2
                 #print(output[pos + i])
                 i += 1
-            id2 += 1
-        id1 += 1
+            
 
 ##table files path
 path = os.path.join(os.path.dirname(os.getcwd()), "Tables")
@@ -46,18 +42,25 @@ pathEmp = os.path.join(path, "Trainees.csv")
 mgr = []
 emp = []
 
-for chunk in pd.read_csv(pathMgr, chunksize = 1024):
+for chunk in csv.readRows(pathMgr, chunkSize = 10240):
     mgr.append(chunk)
 
-for chunk in pd.read_csv(pathEmp, chunksize = 1024):
+for chunk in csv.readRows(pathEmp, chunkSize = 10240):
     emp.append(chunk)
 
-pos = [0 for _ in range(len(emp))]    
+pos = [0 for _ in range(len(emp))]  
+
+##finding index of common column
+header = emp.pop(0)
+idx1 = csv.findIdx(header, "managerID")
+
+header = mgr.pop(0)
+idx2 = csv.findIdx(header, "managerID") 
 ##counting sort to find no of matches
 i = 0
 for table1 in emp:
     for table2 in mgr:
-        pos[i] = countMatches(table1, table2, "managerID" )
+        pos[i] = countMatches(table1, table2, idx1, idx2 )
         i+=1
         
 ##calculate prefix sum of positions
@@ -68,13 +71,11 @@ output = [[] for _ in range(length)]
 
 ##perform join
 idx = 0
-col = "managerID"
+
 for table1 in emp:
     for table2 in mgr:
-        join(table1, table2, output, pos[idx], col )
+        join(table1, table2, output, pos[idx], idx1, idx2 )
         idx += 1
 
 ##print output
-with open("NIJ_SJoin.csv", "w", newline = "") as outp:
-    writer = csv.writer(outp, quoting = csv.QUOTE_NONE)
-    writer.writerows(output)
+csv.writeRows("out.csv", rows = output)
