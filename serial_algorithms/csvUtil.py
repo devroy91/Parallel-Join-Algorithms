@@ -1,11 +1,16 @@
-def readRows(fileName, delim = ','):
+def readRows(fileName, delim = ',', chunkSize = 1024):
     with open(fileName) as inp:
         header = inp.readline().strip().split(delim)
-        rows = []
-        for lines in inp:
-            rows.append(lines.strip().split(delim))
-            print(rows)
-    return [header, rows]
+        yield header
+        while True:
+            rows = []
+            block = inp.readlines(chunkSize)
+            if not block:
+                break
+            for lines in block:
+                rows.append(lines.strip().split(delim))
+            yield rows
+    
 
 def writeRows(fileName, header = None, rows = None, delim = ','):
     with open(fileName, 'w') as outp:
@@ -13,4 +18,6 @@ def writeRows(fileName, header = None, rows = None, delim = ','):
             print(delim.join(header), file = outp)
         for lines in rows:
             print(delim.join(lines), file = outp)
-        
+
+def findIdx(row, idx):
+    return row.index(idx)
