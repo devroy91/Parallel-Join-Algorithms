@@ -3,14 +3,14 @@ import os
 from itertools import accumulate
 import csvUtil as csv
 ##count the no of matches between tables 
-def countMatches(table1, table2, idx1, idx2):
+def countMatches(table1, table2, idx1, idx2, pos, i):
     
     count = 0
     for row1 in table1:
         for row2 in table2:
             if row1[idx1] == row2[idx2]:
                 count += 1
-    return count
+    pos[i] = count
 
 ##prefix sum
 def prefixSum(array):
@@ -60,7 +60,7 @@ idx2 = csv.findIdx(header, "managerID")
 i = 0
 for table1 in emp:
     for table2 in mgr:
-        pos[i] = countMatches(table1, table2, idx1, idx2 )
+        countMatches(table1, table2, idx1, idx2, pos, i )
         i+=1
         
 ##calculate prefix sum of positions
