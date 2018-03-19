@@ -1,10 +1,13 @@
 from collections import defaultdict
  
 def hashJoin(table1, index1, table2, index2):
+    
     h = defaultdict(list)
+    
     # hash phase
     for s in table1:
         h[s[index1]].append(s)
+    
     # join phase
     return [(s, r) for r in table2 for s in h[r[index2]]]
  
