@@ -11,7 +11,7 @@ def countMatches(table1, table2, idx1, idx2, pos, i):
     ty = cuda.blockIdx.x
     bw = cuda.blockDim.x
     pos = tx + ty * bw
-    if(pos < table1.size):
+    if(pos < len(table1)):
         if table1[tx][idx1] == table2[pos][idx2]:
             cuda.atomic.add(pos,i,1)
     
@@ -64,7 +64,9 @@ idx2 = csv.findIdx(header, "managerID")
 i = 0
 for table1 in emp:
     for table2 in mgr:
-        countMatches(table1, table2, idx1, idx2, pos, i )
+        threadsperblock = 32 
+        blockspergrid = (len(emp) + (threadsperblock - 1))
+        countMatches[blockspergrid, threadsperblock](table1, table2, 2, 2, pos, i )
         i+=1
         
 ##calculate prefix sum of positions
