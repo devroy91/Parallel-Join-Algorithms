@@ -11,7 +11,7 @@ def countMatches(table1, table2, idx1, idx2, pos, i):
     ty = cuda.blockIdx.x
     bw = cuda.blockDim.x
     pos = tx + ty * bw
-    if(pos < table1.size):
+    if(pos < len(table1)):
         if table1[tx][idx1] == table2[pos][idx2]:
             cuda.atomic.add(pos,i,1)
     
@@ -60,6 +60,13 @@ idx1 = csv.findIdx(header, "managerID")
 
 header = mgr.pop(0)
 idx2 = csv.findIdx(header, "managerID") 
+
+##converting common idx to int 
+for i in range(len(emp)):
+    emp[i] = [x[:idx1] + [int(x[idx1])] + x[idx1 + 1:] for x in emp[i]]
+    
+for i in range(len(mgr)):
+    mgr[i] = [x[:idx2] + [int(x[idx2])] + x[idx2 + 1:] for x in mgr[i]]
 ##counting sort to find no of matches
 i = 0
 for table1 in emp:
