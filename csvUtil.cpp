@@ -3,8 +3,8 @@
  * where each dict contains a row of csv*
  * **************************************/
 #define pb push_back
-#include<bits/stdc++.h>
-using namespace std;
+#include "csvUtils.h"
+
 /*
         dict
  _____________________________________________
@@ -20,13 +20,6 @@ using namespace std;
 */
 
 
-/*<----defines structure of entry--->*/ 
-typedef struct entry{
-        int idx;
-        string value;
-}entry;
-
-typedef map< string, vector< entry> > Map;
 
 /*<-----takes a string of words separated by comma
  *  and splits it into vector of words -------->*/
@@ -50,7 +43,7 @@ vector<string> ssplit(string s){
 }
 
 /*<-----takes a filename and returns a dict------->*/
-Map read_csv(string filename, bool head = true){
+Map read_csv(string filename, bool head){
         Map d;
         ifstream inp(filename);
         string line;
@@ -89,12 +82,25 @@ vector < string > getVal(Map d, string key){
         }
         return val;
 }
-
-int main(){
-    Map d = read_csv("ManagerS.csv");
-    vector< string > values = getVal(d, "Name");
-    cout << getVal(d, "Name", 0);
-    for(int i = 0; i < values.size(); i++){
-            cout << values[i] << endl;
-    }
+void write_csv(Map d, string filename, char delim){
+        ofstream out(filename);
+        vector< string > keys;
+        for(auto const& key:d){
+                keys.pb(key.first);
+                
+        }
+        int len = d[keys[0]].size();
+        for(int i=0; i < len;i++){
+                string word = "";
+                for(auto const& key:keys){
+                        word+=getVal(d, key, i);
+                        word+=',';
+                }
+                word.pop_back();
+                word.pb('\n');
+                out<<word;
+        }
+        out.close();
 }
+
+
