@@ -43,8 +43,42 @@ vector<string> ssplit(string s){
 }
 
 /*<-----takes a filename and returns a dict------->*/
+Map read_csv(string filename, int chunk, bool head){
+        Map d;
+        static int pos = 0;
+        ifstream inp(filename);
+        string line;
+        inp.seekg(pos);
+        static vector < string > header;
+        static int len;
+        if (pos == 0){
+            inp >> line;
+            //cout << line << endl;
+            header = ssplit(line);
+            len = header.size();
+        }
+        static int lineNo = 0;
+        int  alreadyRead = 0;
+        while(inp >> line && alreadyRead < chunk){
+                ++alreadyRead;
+                ++lineNo;
+                pos = inp.tellg();
+                vector < string > values = ssplit(line);
+                for(int i = 0; i < len;i++){
+                        entry e = {lineNo, values[i]};
+                        d[header[i]].pb(e);
+                }
+        }
+        --pos;
+        inp.close();
+        return d;
+}
+
+        
+
 Map read_csv(string filename, bool head){
         Map d;
+
         ifstream inp(filename);
         string line;
         inp >> line;
@@ -52,7 +86,6 @@ Map read_csv(string filename, bool head){
         vector < string > header = ssplit(line);
         int len = header.size();
         int lineNo = 0;
-
         while(inp >> line){
                 ++lineNo;
                 vector < string > values = ssplit(line);
@@ -61,8 +94,6 @@ Map read_csv(string filename, bool head){
                         d[header[i]].pb(e);
                 }
         }
-        cin.clear();
-        inp.clear();
         /*for(auto it = header.begin(); it!= header.end(); it++){
                 cout << *it << endl;
         }
