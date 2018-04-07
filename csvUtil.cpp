@@ -48,7 +48,7 @@ Map read_csv(string filename, int chunk, bool head){
         static int pos = 0;
         ifstream inp(filename);
         string line;
-        inp.seekg(pos);
+        inp.seekg(pos, ios::beg);
         static vector < string > header;
         static int len;
         if (pos == 0){
@@ -63,13 +63,13 @@ Map read_csv(string filename, int chunk, bool head){
                 ++alreadyRead;
                 ++lineNo;
                 pos = inp.tellg();
+                //pos += (line.size() * 8);
                 vector < string > values = ssplit(line);
                 for(int i = 0; i < len;i++){
                         entry e = {lineNo, values[i]};
                         d[header[i]].pb(e);
                 }
         }
-        --pos;
         inp.close();
         return d;
 }
@@ -113,13 +113,19 @@ vector < string > getVal(Map d, string key){
         }
         return val;
 }
-void write_csv(Map d, string filename, char delim){
-        ofstream out(filename);
+void write_csv(Map d, string filename, int mode, char delim){
         vector< string > keys;
+        ofstream out;
         for(auto const& key:d){
                 keys.pb(key.first);
-                
         }
+        if (mode == 0){
+            out.open(filename, ios::out);
+        }
+        else{
+                out.open(filename, ios::app);
+        }
+        
         int len = d[keys[0]].size();
         for(int i=0; i < len;i++){
                 string word = "";

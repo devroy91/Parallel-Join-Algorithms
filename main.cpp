@@ -1,9 +1,14 @@
 
 #include"csvUtils.h"
 using namespace std;
-int main(){
+int main(int argc, char *argv[]){
         Map d;
-        d = read_csv("ManagerS.csv");
-        write_csv(d, "out.csv");
+        int chunk = stoi(argv[2]);
+        d = read_csv(argv[1], chunk, true);
+        write_csv(d, "out.csv", 0, ',');
+        d = read_csv(argv[1], chunk, true);
+        write_csv(d, "out.csv", 1, ',');
+        d = read_csv(argv[1], chunk, true);
+        write_csv(d, "out.csv", 1, ',');
         return 0;
 }
