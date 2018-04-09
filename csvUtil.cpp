@@ -43,26 +43,22 @@ vector<string> ssplit(string s){
 }
 
 /*<-----takes a filename and returns a dict------->*/
-Map read_csv(string filename, int chunk, bool head){
+Map csvstream::read_csv(int chunk, bool head){
         Map d;
-        static int pos = 0;
-        ifstream inp(filename);
         string line;
-        inp.seekg(pos, ios::beg);
-        static vector < string > header;
-        static int len;
-        if (pos == 0){
+	ifstream inp(filename);
+        inp.seekg(ipos, ios::beg);
+        if (ipos == 0){
             inp >> line;
             //cout << line << endl;
             header = ssplit(line);
             len = header.size();
         }
-        static int lineNo = 0;
         int  alreadyRead = 0;
         while(inp >> line && alreadyRead < chunk){
                 ++alreadyRead;
                 ++lineNo;
-                pos = inp.tellg();
+                ipos = inp.tellg();
                 //pos += (line.size() * 8);
                 vector < string > values = ssplit(line);
                 for(int i = 0; i < len;i++){
@@ -76,11 +72,12 @@ Map read_csv(string filename, int chunk, bool head){
 
         
 
-Map read_csv(string filename, bool head){
+Map csvstream::read_csv(bool head){
         Map d;
-
+	ipos = 0;
         ifstream inp(filename);
         string line;
+        lineNo = 0;
         inp >> line;
         //cout << line << endl;
         vector < string > header = ssplit(line);
@@ -113,13 +110,13 @@ vector < string > getVal(Map d, string key){
         }
         return val;
 }
-void write_csv(Map d, string filename, int mode, char delim){
+void write_csv(Map d, string filename, Mode m, char delim){
         vector< string > keys;
         ofstream out;
         for(auto const& key:d){
                 keys.pb(key.first);
         }
-        if (mode == 0){
+        if (m == Mode::out){
             out.open(filename, ios::out);
         }
         else{
