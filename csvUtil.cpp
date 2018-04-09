@@ -54,10 +54,11 @@ Map csvstream::read_csv(int chunk, bool head){
             header = ssplit(line);
             len = header.size();
         }
+	int lineNo = 0; 
         int  alreadyRead = 0;
         while(inp >> line && alreadyRead < chunk){
                 ++alreadyRead;
-                ++lineNo;
+                
                 ipos = inp.tellg();
                 //pos += (line.size() * 8);
                 vector < string > values = ssplit(line);
@@ -65,6 +66,7 @@ Map csvstream::read_csv(int chunk, bool head){
                         entry e = {lineNo, values[i]};
                         d[header[i]].pb(e);
                 }
+		++lineNo;
         }
         inp.close();
         return d;
@@ -80,16 +82,17 @@ Map csvstream::read_csv(bool head){
         lineNo = 0;
         inp >> line;
         //cout << line << endl;
-        vector < string > header = ssplit(line);
+        header = ssplit(line);
         int len = header.size();
         int lineNo = 0;
         while(inp >> line){
-                ++lineNo;
+                
                 vector < string > values = ssplit(line);
                 for(int i = 0; i < len;i++){
                         entry e = {lineNo, values[i]};
                         d[header[i]].pb(e);
                 }
+		++lineNo;
         }
         /*for(auto it = header.begin(); it!= header.end(); it++){
                 cout << *it << endl;
