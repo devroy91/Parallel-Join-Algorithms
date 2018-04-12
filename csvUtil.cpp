@@ -116,11 +116,19 @@ vector < string > getVal(Map d, string key){
 void write_csv(Map d, string filename, Mode m, char delim){
         vector< string > keys;
         ofstream out;
+        string str = "";
         for(auto const& key:d){
                 keys.pb(key.first);
         }
         if (m == Mode::out){
             out.open(filename, ios::out);
+	    for(auto const& k:keys){
+		str += k;
+		str += ",";
+	    }
+	    str.pop_back();
+	    str.pb('\n');
+	    out<<str;
         }
         else{
                 out.open(filename, ios::app);

@@ -47,17 +47,17 @@ void joinMatches(vector< int > const& count, string file1, string file2, string 
 	csvstream tinp(file1);
 	//read from file1 in chunks
 	do{
-		Map tab1 = tinp.read_csv(10, true);
-
-		if(tab1 .empty())
+		Map tab1 = tinp.read_csv(1000, true);
+		cout << "Inside joinMatches"<<endl;
+		if(tab1.empty())
 			break;
 		
 		//read from file2 in chunks
 		csvstream minp(file2);
 		
 		do{	
-			Map tab2 = minp.read_csv(5, true);
-			if(tab2 .empty())
+			Map tab2 = minp.read_csv(1000, true);
+			if(tab2.empty())
 				break;
 			//counting sort to find positions in output array
 			join(count, tab1, tab2, col);
@@ -85,16 +85,16 @@ void countMatches(vector< int > &count, string file1, string file2, string col){
 	bool collect = false; 
 	//read from file1 in chunks
 	do{
-		Map tab1 = tinp.read_csv(10, true);
-		if(tab1 .empty())
+		Map tab1 = tinp.read_csv(1000, true);
+		if(tab1.empty())
 			break;
 		
 		//read from file2 in chunks
 		csvstream minp(file2);
 		
 		do{
-			Map tab2 = minp.read_csv(5, true);
-			if(tab2 .empty())
+			Map tab2 = minp.read_csv(1000, true);
+			if(tab2.empty())
 				break;
 			//counting sort to find positions in output array
 			int res = countSort(tab1, tab2, col);
