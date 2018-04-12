@@ -1,8 +1,21 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef struct entry{
+typedef class entry{
+	public:
 	int idx;
 	string value;
+	int ival;
+	entry(int idx, string value){
+	    this->idx = idx;
+	    this->value = value;
+	    try{
+                this->ival = stoi(value);
+            }
+            catch(exception e){
+	        this->ival = -9999;
+	    }
+	}
+	
 }entry;
 
 typedef map<string, vector< entry > > Map;
