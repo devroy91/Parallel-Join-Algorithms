@@ -71,9 +71,65 @@ Map csvstream::read_csv(int chunk, bool head){
         inp.close();
         return d;
 }
-
+Map csvstream::read_csv(int chunk, bool head, bool contiguous){
+        Map d;
+        string line;
+	ifstream inp(filename);
+        inp.seekg(ipos, ios::beg);
+        if (ipos == 0){
+            inp >> line;
+            //cout << line << endl;
+            header = ssplit(line);
+            len = header.size();
+        }
+	static int lineNo = 0; 
+        int  alreadyRead = 0;
+        while(inp >> line && alreadyRead < chunk){
+                ++alreadyRead;
+                
+                ipos = inp.tellg();
+                //pos += (line.size() * 8);
+                vector < string > values = ssplit(line);
+                for(int i = 0; i < len;i++){
+                        entry e = {lineNo, values[i]};
+                        d[header[i]].pb(e);
+                }
+		++lineNo;
+        }
+        inp.close();
+        return d;
+}
         
 
+Map csvstream::read_csv(vector<string> &s, bool head){
+        Map d;
+	ipos = 0;
+        ifstream inp(filename);
+        string line;
+        lineNo = 0;
+        inp >> line;
+        //cout << line << endl;
+	s.pb(line);
+        header = ssplit(line);
+        int len = header.size();
+        int lineNo = 0;
+        while(inp >> line){
+		++lineNo;
+                s.pb(line);
+                vector < string > values = ssplit(line);
+                for(int i = 0; i < len;i++){
+                        entry e = {lineNo, values[i]};
+                        d[header[i]].pb(e);
+                }
+		
+        }
+        /*for(auto it = header.begin(); it!= header.end(); it++){
+                cout << *it << endl;
+        }
+        */
+        inp.close();
+        return d;
+}
 Map csvstream::read_csv(bool head){
         Map d;
 	ipos = 0;
@@ -101,7 +157,6 @@ Map csvstream::read_csv(bool head){
         inp.close();
         return d;
 }
-
 string getVal(Map d, string key, int id){
         return d[key][id].value;
 }

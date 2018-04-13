@@ -21,7 +21,7 @@ void join(vector< int > const& count, Map & a, Map &b, string col){
 						
 						string s = getVal(a, it, idx1);
 						entry e = {line, s};
-						d["t1"+it].pb(e);
+						d["t1."+it].pb(e);
 					}
 				}
 				
@@ -31,14 +31,14 @@ void join(vector< int > const& count, Map & a, Map &b, string col){
 					if(it!=col){
 						string s = getVal(b, it, idx2);
 						entry e = {line, s};
-						d["t2"+it].pb(e);
+						d["t2."+it].pb(e);
 					}
 				}
 			}
 		}
 	}
 	if(!d.empty()){
-		write_csv(d, "out.csv", m, ',');
+		write_csv(d, "nij_Serial.csv", m, ',');
 		m = Mode::app;
 	}
 }
@@ -48,7 +48,6 @@ void joinMatches(vector< int > const& count, string file1, string file2, string 
 	//read from file1 in chunks
 	do{
 		Map tab1 = tinp.read_csv(1000, true);
-		cout << "Inside joinMatches"<<endl;
 		if(tab1.empty())
 			break;
 		
@@ -114,9 +113,9 @@ int main(){
 	Map trainee, mgr;
 	vector< int > count;
 	//counting sort
-	countMatches(count, "Trainees.csv", "ManagerO.csv", "managerID");
+	countMatches(count, "Trainee1.csv", "ManagerO.csv", "managerID");
 	//prefix sum of count
 	partial_sum(count.begin(), count.end(), count.begin());
 	//actual join operation
-	joinMatches(count, "Trainees.csv", "ManagerO.csv", "managerID");
+	joinMatches(count, "Trainee1.csv", "ManagerO.csv", "managerID");
 }

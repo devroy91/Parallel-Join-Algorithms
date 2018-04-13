@@ -31,8 +31,10 @@ typedef class csvstream{
                 int ipos = 0;
 		int lineNo = 0;
 		int len = 0;
+		Map read_csv(int chunk, bool head, bool contiguous);
                 Map read_csv(int chunk, bool head);
-                Map read_csv(bool head = true);
+                Map read_csv(bool head);
+		Map read_csv(vector<string> &s, bool head);
 		vector< string > header;
 }csvstream;
 
