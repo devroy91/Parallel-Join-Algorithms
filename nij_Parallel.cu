@@ -50,7 +50,7 @@ void join(cudaEntry *tab1, cudaEntry *tab2, cudaEntry *out, int *count, int lenT
 		cudaEntry e2 = *(tab2 + i);
 		int val2 = e2.value;
 		if(val1 == val2){
-		    cudaEntry *temp = out+idx+matches;
+		    cudaEntry *temp = out+count[idx]+matches;
 		    temp->idx = e1.idx;
 		    temp->value = e2.idx;
 		    ++matches;
