@@ -44,7 +44,7 @@ void join(ind *key1, ind *key2, vector<string> &tab1, vector<string> &tab2, int 
 	    lout +=tab1[idx]+","+tab2[pos]+"\n";
 	}
     }
-    ofstream outp("out.csv");
+    ofstream outp("ij_Serial.csv");
     outp << lout;
 }
 int main(){
